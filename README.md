@@ -1,0 +1,2 @@
+# graphconf
+print graph good
