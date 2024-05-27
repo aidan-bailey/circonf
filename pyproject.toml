@@ -1,6 +1,6 @@
 [project]
 name = "graphconf"
-version = "0.0.2.dev0"
+version = "0.0.0.dev0"
 authors = [
   { name="Aidan Bailey", email="dev@aidanbailey.me" },
 ]
