@@ -6,8 +6,8 @@ class Context:
 
     _boundryWidth: int
     _boundryHeight: int
-    _vertices: int
-    _edges: int
+    _vertices: list[str]
+    _edges: list[tuple[str, str]]
 
     def __init__(self, boundryWidth: int, boundryHeight: int, vertices: list[str], edges: list[tuple[str, str]]) -> None:
         self._boundryWidth = boundryWidth
