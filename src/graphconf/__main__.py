@@ -32,14 +32,16 @@ class Context:
 
 def main():
 
-    boundryWidth = 5
-    boundryHeight = 5
+    boundryWidth = 2
+    boundryHeight = 2
 
     ctx = Context(5, 5, ["a", "b", "c", "d"], [("a", "b")])
     ctl = clingo.Control()
     with open("/Users/aidanbailey/Source/School/graphconf/graphconf.lp", "r") as f:
         code = f.read()
     ctl.add("base", [], code)
+
+    graphs = []
 
     def on_model(model):
         #graph = [["  " for row in range(5)] for col in range(5)]
@@ -86,13 +88,16 @@ def main():
 
         G.add_edges_from(edges)
 
+        graphs.append(lambda: nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15))
         nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15)
 
         plt.show()
 
 
     ctl.ground([("base", [])], context=ctx)
-    ctl.solve(on_model=on_model)
+    sol = ctl.solve(on_model=on_model)
+    #graphs[-1]()
+    #plt.show()
 
 if __name__ == "__main__":
     main()

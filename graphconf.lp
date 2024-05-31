@@ -4,15 +4,15 @@
 
 #const nBoundryWidth = 5.
 #const nBoundryHeight = 5.
-#const nMinVertexDistance = 2.
-#const nMaxVertexDistance = 10.
+#const nMinVertexDistance = 0.
+#const nMaxVertexDistance = 100.
 
 %%%%%%%%%%
 % DEFINE %
 %%%%%%%%%%
 
-vertex(a;b;c).
-edge(a, b; c,a).
+vertex(a;b;c;d).
+edge(a, b; b, c; c, d).
 square(1..nBoundryWidth, 1..nBoundryHeight).
 
 nVertex(N) :- #count{V: vertex(V)} = N.
@@ -88,7 +88,9 @@ meanWireLength(M) :- netWireLength(N), wireCount(C),  M = N / C.
    node(X2, Y2, _).
 
 % a wire cannot split unless it comes from the same source
-V1 = V3 :- segment(X, Y, _, _, V1, V2), segment(X, Y, _, _, V3, V4).
+% wire cannot occupy the same space
+
+:- segment(X, Y, _, _, V1, V2), segment(_, _, X, Y, V3, V4).
 
 %%%%%%%%%%%%
 % OPTIMISE %
