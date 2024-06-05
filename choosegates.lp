@@ -112,7 +112,6 @@ N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
 % OUTPUTS %
 %%%%%%%%%%%
 
-
 gate(x1).
 gate_type(x1, source).
 
