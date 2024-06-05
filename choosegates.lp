@@ -43,65 +43,75 @@ gate(1..N) :- gateCount(N).
 numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
 numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
 Ni = No :- numTerminalIns(Ni), numTerminalOuts(No).
-numWires(Ni) :- numTerminalIns(Ni).
 
 %%%%%%%%%%%%%%%%%%%%%%
 % CREATE CONNECTIONS %
 %%%%%%%%%%%%%%%%%%%%%%
 
-wtype(win, wout).
+{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} = 1 :- terminal(Gout, Nout, tout).
 
-wire(1..N) :- numWires(N).
-
-{connect(G, N, tin, W): terminal(G, N, tin)} = 1 :- wire(W).
-{connect(G, N, tout, W): terminal(G, N, tout)} = 1 :- wire(W).
-
-W1 = W2 :- connect(G, N, T, W1), connect(G, N, T, W2).
-N1 = N2 :- connect(G, N1, T, W), connect(G, N2, T, W).
-W1 != W2 :- connect(G, _, tin, W1), connect(G, _, tout, W2).
+:- connection(G, Nout, G, Nin).
+N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
+G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
+:- terminal(G, N, tin), not connection(_, _, G, N).
+:- terminal(G, N, tout), not connection(G, N, _, _).
 
 %%%%%%%%%%%%%%
 % INPUT VALS %
 %%%%%%%%%%%%%%
 
-:- val(W, 1), val(W, 0).
+signal(0; 1).
 
-val(W, 0) :- wire(W), not val(W, 1).
+val(G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(G1, N1, G2, N2, V), signal(V), V = 1, V2 = 0.
 
-%val(W, 1) :- gate(G), gate_type(G, and_g), wire(W),
-%             arityin(and_g, A), #sum{V, wire(Win): val(Win, V), connect(G, 1..A, tin, Win)} = A.
+V1 = V2 :- val(G1, N1, G2, N2, V1), val(G1, N1, G2, N2, V2).
 
-%val(W, 1) :- gate(G), gate_type(G, or_g), wire(W),
-%             arityin(or_g, A), #sum{V, wire(Win): val(Win, V), connect(G, 1..A, tin, Win)} > 0.
+% Not
+val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(_, _, G1, N1, 0).
 
-%val(W, 1) :- gate(G), gate_type(G, not_g), wire(W), connect(G, 1, tin, Win), val(Win, 0).
+% And
+val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 1).
+val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 0).
+val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 1).
+val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 0).
 
-%val(W, V) :- gate(G), gate_type(G, source), wire(W), arityout(source, A), connect(G, 1, tout, W), assign(G, V).
+% Or
+val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 0).
+val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 1).
+val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 0).
+val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 1).
 
-%val(W, V) :- gate(G), gate_type(G, destination), wire(W), arityin(destination, A), connect(G, 1, tin, W), assign(G, V).
+% Source
+val(G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assign(G1, V).
 
+% Destination
+val(G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assign(G2, V).
 
 %%%%%%%%%%%
 % OUTPUTS %
 %%%%%%%%%%%
 
-gate(x).
-gate_type(x, source).
-assign(x, 1).
+gate(x1).
+gate_type(x1, source).
+assign(x1, 0).
+
+gate(x2).
+gate_type(x2, source).
+assign(x2, 0).
 
 gate(y).
 gate_type(y, destination).
-assign(y, 0).
+assign(y, 1).
 
 %#show terminal/3.
 %#show gateCount/1.
-%#show gate/1.
-%#show gate_type/2.
+#show gate/1.
+#show gate_type/2.
 %#show terminal/3.
 %#show numTerminalOuts/1.
 %#show connect/4.
 %#show numWires/1.
 %#show arityin/2.
-%#show arityout/2.
+%#show connection/4.
 
-#show val/2.
+#show val/5.
