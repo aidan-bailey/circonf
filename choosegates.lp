@@ -15,9 +15,9 @@ type(not_g).
 arityin(not_g, 1).
 arityout(not_g, 1).
 
-type(and_g;or_g;xor_x).
-arityin((and_g; or_g; xor_x), 2).
-arityout((and_g; or_g; xor_x), 1).
+type(and_g;or_g;xor_g).
+arityin((and_g; or_g; xor_g), 2).
+arityout((and_g; or_g; xor_g), 1).
 
 type(source).
 arityin(source, 0).
@@ -108,53 +108,35 @@ gate_type(x2, source).
 gate(y1).
 gate_type(y1, destination).
 
-%gate(y2).
-%gate_type(y2, destination).
+gate(y2).
+gate_type(y2, destination).
 
 step(1; 2; 3; 4).
 
 assign(1, x1, 0).
 assign(1, x2, 0).
 assign(1, y1, 0).
+assign(1, y2, 0).
 
 assign(2, x1, 1).
 assign(2, x2, 0).
 assign(2, y1, 1).
+assign(2, y2, 0).
 
 assign(3, x1, 0).
 assign(3, x2, 1).
 assign(3, y1, 1).
+assign(3, y2, 0).
 
 assign(4, x1, 1).
 assign(4, x2, 1).
 assign(4, y1, 0).
-
-#minimize{N: gateCount(N)}.
-
-%step(1; 2; 3; 4).
-
-%assign(1, x1, 0).
-%assign(1, x2, 0).
-%assign(1, y1, 0).
-%assign(1, y2, 0).
-
-%assign(2, x1, 1).
-%assign(2, x2, 0).
-%assign(2, y1, 1).
-%assign(2, y2, 0).
-
-%assign(3, x1, 0).
-%assign(3, x2, 1).
-%assign(3, y1, 1).
-%assign(3, y2, 0).
-
-%assign(4, x1, 1).
-%assign(4, x2, 1).
-%assign(4, y1, 0).
-%assign(4, y2, 1).
+assign(4, y2, 1).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
+
+#minimize{N: gateCount(N)}.
 
 %#show gate/1.
 #show gate_type/2.
