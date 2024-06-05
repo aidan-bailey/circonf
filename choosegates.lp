@@ -11,10 +11,6 @@
 
 terminal_type(tin, tout).
 
-type(not_g).
-arityin(not_g, 1).
-arityout(not_g, 1).
-
 type(and_g;or_g;xor_g).
 arityin((and_g; or_g; xor_g), 2).
 arityout((and_g; or_g; xor_g), 1).
@@ -22,34 +18,9 @@ arityout((and_g; or_g; xor_g), 1).
 terminal(G, 1..N, tin) :- gate(G), gate_type(G, T), arityin(T, N).
 terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
 
-%%%%%%%%%%%%%%%%%%
-% GENERATE GATES %
-%%%%%%%%%%%%%%%%%%
-
-{gateCount(N): N = minGates..maxGates} = 1.
-
-gate(1..N) :- gateCount(N).
-
-{gate_type(I, T): type(T), T != source, T != destination} = 1 :- I = 1..N, gate(I), gateCount(N).
-
-numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
-numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
-
-%%%%%%%%%%%%%%%%%%%%%%
-% CREATE CONNECTIONS %
-%%%%%%%%%%%%%%%%%%%%%%
-
-0{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)}1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).
-
-:- connection(G, Nout, G, Nin).
-N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
-G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
-:- terminal(G, N, tin), not connection(_, _, G, N).
-N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
-
-%%%%%%%%%%%%%%
-% INPUT VALS %
-%%%%%%%%%%%%%%
+%%%%%%%%%
+% GATES %
+%%%%%%%%%
 
 signal(0; 1).
 
@@ -74,6 +45,11 @@ arityout(destination, 0).
 val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assert(S, G2, V), step(S).
 
 % Not
+
+type(not_g).
+arityin(not_g, 1).
+arityout(not_g, 1).
+
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 0), step(S).
 
@@ -94,6 +70,32 @@ val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), v
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
+
+%%%%%%%%%%%%%%%%%%
+% GENERATE GATES %
+%%%%%%%%%%%%%%%%%%
+
+{gateCount(N): N = minGates..maxGates} = 1.
+
+gate(1..N) :- gateCount(N).
+
+{gate_type(I, T): type(T), T != source, T != destination} = 1 :- I = 1..N, gate(I), gateCount(N).
+
+numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
+
+numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
+
+%%%%%%%%%%%%%%%%%%%%%%
+% CREATE CONNECTIONS %
+%%%%%%%%%%%%%%%%%%%%%%
+
+0{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)}1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).
+
+:- connection(G, Nout, G, Nin).
+N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
+G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
+:- terminal(G, N, tin), not connection(_, _, G, N).
+N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
 
 %%%%%%%%%%%
 % OUTPUTS %
