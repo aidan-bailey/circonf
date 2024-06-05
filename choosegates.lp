@@ -3,7 +3,7 @@
 %%%%%%%%%%
 
 #const minGates = 1.
-#const maxGates = 1.
+#const maxGates = 10.
 
 %%%%%%%%%%%%%%%
 % DEFINITIONS %
@@ -62,56 +62,97 @@ G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
 
 signal(0; 1).
 
-val(G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(G1, N1, G2, N2, V), signal(V), V = 1, V2 = 0.
+val(S, G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(S, G1, N1, G2, N2, V), signal(V), V = 1, V2 = 0, step(S).
 
-V1 = V2 :- val(G1, N1, G2, N2, V1), val(G1, N1, G2, N2, V2).
+V1 = V2 :- val(S, G1, N1, G2, N2, V1), val(S, G1, N1, G2, N2, V2), step(S).
 
 % Not
-val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(_, _, G1, N1, 0).
+val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 1), step(S).
+val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 0), step(S).
 
 % And
-val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 1).
-val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 0).
-val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 1).
-val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 0).
+val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
+val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
+val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
+val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 0), step(S).
 
 % Or
-val(G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 0).
-val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 0), val(_, _, G1, 2, 1).
-val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 0).
-val(G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(_, _, G1, 1, 1), val(_, _, G1, 2, 1).
+val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 0), step(S).
+val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
+val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
+val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
 
 % Source
-val(G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assign(G1, V).
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assign(S, G1, V), step(S).
 
 % Destination
-val(G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assign(G2, V).
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assign(S, G2, V), step(S).
 
 %%%%%%%%%%%
 % OUTPUTS %
 %%%%%%%%%%%
 
+
 gate(x1).
 gate_type(x1, source).
-assign(x1, 0).
 
 gate(x2).
 gate_type(x2, source).
-assign(x2, 0).
 
-gate(y).
-gate_type(y, destination).
-assign(y, 1).
+gate(y1).
+gate_type(y1, destination).
 
-%#show terminal/3.
-%#show gateCount/1.
-#show gate/1.
+%gate(y2).
+%gate_type(y2, destination).
+
+step(1; 2; 3; 4).
+
+assign(1, x1, 0).
+assign(1, x2, 0).
+assign(1, y1, 0).
+
+assign(2, x1, 1).
+assign(2, x2, 0).
+assign(2, y1, 1).
+
+assign(3, x1, 0).
+assign(3, x2, 1).
+assign(3, y1, 1).
+
+assign(4, x1, 1).
+assign(4, x2, 1).
+assign(4, y1, 0).
+
+#minimize{N: gateCount(N)}.
+
+%step(1; 2; 3; 4).
+
+%assign(1, x1, 0).
+%assign(1, x2, 0).
+%assign(1, y1, 0).
+%assign(1, y2, 0).
+
+%assign(2, x1, 1).
+%assign(2, x2, 0).
+%assign(2, y1, 1).
+%assign(2, y2, 0).
+
+%assign(3, x1, 0).
+%assign(3, x2, 1).
+%assign(3, y1, 1).
+%assign(3, y2, 0).
+
+%assign(4, x1, 1).
+%assign(4, x2, 1).
+%assign(4, y1, 0).
+%assign(4, y2, 1).
+
+con(G1, G2) :- connection(G1, N1, G2, N2).
+conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
+
+%#show gate/1.
 #show gate_type/2.
-%#show terminal/3.
-%#show numTerminalOuts/1.
-%#show connect/4.
-%#show numWires/1.
-%#show arityin/2.
 %#show connection/4.
-
-#show val/5.
+#show con/2.
+%#show val/6.
+#show conval/3.
