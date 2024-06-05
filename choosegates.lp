@@ -2,8 +2,8 @@
 % CONSTS %
 %%%%%%%%%%
 
-#const minGates = 1.
-#const maxGates = 10.
+#const minGates = 7.
+#const maxGates = 7.
 
 %%%%%%%%%%%%%%%
 % DEFINITIONS %
@@ -21,7 +21,7 @@ arityout((and_g; or_g), 1).
 
 type(source).
 arityin(source, 0).
-arityout(source, 1).
+arityout(source, 2).
 
 type(destination).
 arityin(destination, 1).
@@ -38,7 +38,7 @@ terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
 
 gate(1..N) :- gateCount(N).
 
-{gate_type(I, T): type(T), T != source, T != destination} = 1 :- I = 1..N, gate(I), gateCount(N).
+{gate_type(I, T): type(T), T != source, T != destination, T != and_g} = 1 :- I = 1..N, gate(I), gateCount(N).
 
 numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
 numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
@@ -48,7 +48,8 @@ Ni = No :- numTerminalIns(Ni), numTerminalOuts(No).
 % CREATE CONNECTIONS %
 %%%%%%%%%%%%%%%%%%%%%%
 
-{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} = 1 :- terminal(Gout, Nout, tout).
+%{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} :- terminal(Gout, Nout, tout), gate_type(Gout, source).
+{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} = 1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).%, T != source.
 
 :- connection(G, Nout, G, Nin).
 N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
@@ -155,4 +156,4 @@ conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
 %#show connection/4.
 #show con/2.
 %#show val/6.
-#show conval/3.
+%#show conval/3.
