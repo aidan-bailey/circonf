@@ -42,7 +42,6 @@ gate(1..N) :- gateCount(N).
 
 numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
 numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
-%Ni < No :- numTerminalIns(Ni), numTerminalOuts(No).
 
 %%%%%%%%%%%%%%%%%%%%%%
 % CREATE CONNECTIONS %
@@ -173,9 +172,5 @@ conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
 
 #minimize{N: gateCount(N)}.
 
-%#show gate/1.
 #show gate_type/2.
-%#show connection/4.
 #show con/2.
-%#show val/6.
-%#show conval/3.
