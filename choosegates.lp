@@ -21,7 +21,7 @@ arityout((and_g; or_g; xor_g), 1).
 
 type(source).
 arityin(source, 0).
-arityout(source, 2).
+arityout(source, 10).
 
 type(destination).
 arityin(destination, 1).
@@ -89,10 +89,10 @@ val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), v
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
 
 % Source
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assign(S, G1, V), step(S).
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assert(S, G1, V), step(S).
 
 % Destination
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assign(S, G2, V), step(S).
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assert(S, G2, V), step(S).
 
 %%%%%%%%%%%
 % OUTPUTS %
@@ -105,33 +105,68 @@ gate_type(x1, source).
 gate(x2).
 gate_type(x2, source).
 
+gate(x3).
+gate_type(x3, source).
+
 gate(y1).
 gate_type(y1, destination).
 
 gate(y2).
 gate_type(y2, destination).
 
-step(1; 2; 3; 4).
+gate(y3).
+gate_type(y3, destination).
 
-assign(1, x1, 0).
-assign(1, x2, 0).
-assign(1, y1, 0).
-assign(1, y2, 0).
+step(1; 2; 3; 4; 5; 6; 7).
 
-assign(2, x1, 1).
-assign(2, x2, 0).
-assign(2, y1, 1).
-assign(2, y2, 0).
+assert(1, x1, 0).
+assert(1, x2, 0).
+assert(1, x3, 0).
+assert(1, y1, 0).
+assert(1, y2, 0).
+assert(1, y3, 0).
 
-assign(3, x1, 0).
-assign(3, x2, 1).
-assign(3, y1, 1).
-assign(3, y2, 0).
+assert(2, x1, 1).
+assert(2, x2, 0).
+assert(2, x3, 0).
+assert(2, y1, 1).
+assert(2, y2, 0).
+assert(2, y3, 0).
 
-assign(4, x1, 1).
-assign(4, x2, 1).
-assign(4, y1, 0).
-assign(4, y2, 1).
+assert(3, x1, 0).
+assert(3, x2, 1).
+assert(3, x3, 0).
+assert(3, y1, 1).
+assert(3, y2, 0).
+assert(3, y3, 0).
+
+assert(4, x1, 0).
+assert(4, x2, 0).
+assert(4, x3, 1).
+assert(4, y1, 1).
+assert(4, y2, 0).
+assert(4, y3, 0).
+
+assert(5, x1, 1).
+assert(5, x2, 1).
+assert(5, x3, 0).
+assert(5, y1, 0).
+assert(5, y2, 1).
+assert(5, y3, 0).
+
+assert(6, x1, 0).
+assert(6, x2, 1).
+assert(6, x3, 1).
+assert(6, y1, 0).
+assert(6, y2, 1).
+assert(6, y3, 0).
+
+assert(7, x1, 1).
+assert(7, x2, 1).
+assert(7, x3, 1).
+assert(7, y1, 0).
+assert(7, y2, 0).
+assert(7, y3, 1).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
