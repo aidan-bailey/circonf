@@ -2,8 +2,8 @@
 % CONSTS %
 %%%%%%%%%%
 
-#const minGates = 7.
-#const maxGates = 7.
+#const minGates = 1.
+#const maxGates = 10.
 
 %%%%%%%%%%%%%%%
 % DEFINITIONS %
@@ -48,14 +48,13 @@ Ni = No :- numTerminalIns(Ni), numTerminalOuts(No).
 % CREATE CONNECTIONS %
 %%%%%%%%%%%%%%%%%%%%%%
 
-%{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} :- terminal(Gout, Nout, tout), gate_type(Gout, source).
-{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)} = 1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).%, T != source.
+0{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)}1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).%, T != source.
 
 :- connection(G, Nout, G, Nin).
 N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
 G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
 :- terminal(G, N, tin), not connection(_, _, G, N).
-:- terminal(G, N, tout), not connection(G, N, _, _).
+N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
 
 %%%%%%%%%%%%%%
 % INPUT VALS %
