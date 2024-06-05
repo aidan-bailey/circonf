@@ -11,10 +11,6 @@
 
 terminal_type(tin, tout).
 
-type(and_g;or_g;xor_g).
-arityin((and_g; or_g; xor_g), 2).
-arityout((and_g; or_g; xor_g), 1).
-
 terminal(G, 1..N, tin) :- gate(G), gate_type(G, T), arityin(T, N).
 terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
 
@@ -54,18 +50,33 @@ val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), v
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 0), step(S).
 
 % And
+
+type(and_g).
+arityin(and_g, 2).
+arityout(and_g, 1).
+
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, and_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 0), step(S).
 
 % Or
+
+type(or_g).
+arityin(or_g, 2).
+arityout(or_g, 1).
+
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, or_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
 
 % Xor
+
+type(xor_g).
+arityin(xor_g, 2).
+arityout(xor_g, 1).
+
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
