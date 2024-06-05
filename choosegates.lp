@@ -19,14 +19,6 @@ type(and_g;or_g;xor_g).
 arityin((and_g; or_g; xor_g), 2).
 arityout((and_g; or_g; xor_g), 1).
 
-type(source).
-arityin(source, 0).
-arityout(source, 10).
-
-type(destination).
-arityin(destination, 1).
-arityout(destination, 0).
-
 terminal(G, 1..N, tin) :- gate(G), gate_type(G, T), arityin(T, N).
 terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
 
@@ -65,6 +57,22 @@ val(S, G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(S, G1, N1, G2,
 
 V1 = V2 :- val(S, G1, N1, G2, N2, V1), val(S, G1, N1, G2, N2, V2), step(S).
 
+% Source
+
+type(source).
+arityin(source, 0).
+arityout(source, 10).
+
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assert(S, G1, V), step(S).
+
+% Destination
+
+type(destination).
+arityin(destination, 1).
+arityout(destination, 0).
+
+val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assert(S, G2, V), step(S).
+
 % Not
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, not_g), val(S, _, _, G1, N1, 0), step(S).
@@ -86,12 +94,6 @@ val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), v
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 0), val(S, _, _, G1, 2, 1), step(S).
 val(S, G1, N1, G2, N2, 1) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 0), step(S).
 val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), val(S, _, _, G1, 1, 1), val(S, _, _, G1, 2, 1), step(S).
-
-% Source
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assert(S, G1, V), step(S).
-
-% Destination
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assert(S, G2, V), step(S).
 
 %%%%%%%%%%%
 % OUTPUTS %
@@ -169,6 +171,10 @@ assert(7, y3, 1).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
+
+%%%%%%%%%%%%
+% OPTIMISE %
+%%%%%%%%%%%%
 
 #minimize{N: gateCount(N)}.
 
