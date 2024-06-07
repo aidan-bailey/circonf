@@ -2,15 +2,20 @@
 % CONSTS %
 %%%%%%%%%%
 
+% Minimum number of logic gates
 #const minGates = 1.
+
+% Maximum number of logic gates
 #const maxGates = 10.
 
 %%%%%%%%%%%%%%%
 % DEFINITIONS %
 %%%%%%%%%%%%%%%
 
+% Terminal types
 terminal_type(tin, tout).
 
+% Initialise terminals for gates
 terminal(G, 1..N, tin) :- gate(G), gate_type(G, T), arityin(T, N).
 terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
 
