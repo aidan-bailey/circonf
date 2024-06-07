@@ -15,7 +15,7 @@ class Context:
 def main():
     ctx = Context()
     ctl = clingo.Control()
-    with open(os.path.join(os.curdir, "choosegates.lp"), "r") as f:
+    with open(os.path.join(os.curdir, "circonf.lp"), "r") as f:
         code = f.read()
     ctl.add("base", [], code)
 
