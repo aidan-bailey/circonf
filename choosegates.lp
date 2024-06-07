@@ -90,22 +90,23 @@ val(S, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2), gate_type(G1, xor_g), v
 
 gate(1..N) :- gateCount(N).
 
-{gate_type(I, T): type(T), T != source, T != destination} = 1 :- I = 1..N, gate(I), gateCount(N).
-
-numTerminalIns(N) :- #count{G, I: terminal(G, I, tin)} = N.
-
-numTerminalOuts(N) :- #count{G, I: terminal(G, I, tout)} = N.
+{gate_type(G, T): type(T)} = 1 :- gate(G), not gate_type(G, destination), not gate_type(G, source).
 
 %%%%%%%%%%%%%%%%%%%%%%
 % CREATE CONNECTIONS %
 %%%%%%%%%%%%%%%%%%%%%%
 
+% Choose to connect an output terminal of a gate
 0{connection(Gout, Nout, Gin, Nin): terminal(Gin, Nin, tin)}1 :- terminal(Gout, Nout, tout), gate_type(Gout, T).
 
-:- connection(G, Nout, G, Nin).
-N1 = N2 :- connection(G, N1, G2, N), connection(G, N2, G2, N).
-G1 = G2 :- connection(G1, N, G2, N), connection(G2, N, G2, N).
+% Every input needs a connection
 :- terminal(G, N, tin), not connection(_, _, G, N).
+
+% Multiple gates output terminals cannot be connected to the same input terminal
+G1 = G2 :- connection(G1, N, G, N), connection(G2, N, G, N).
+N1 = N2 :- connection(G, N1, G, N), connection(G, N2, G, N).
+
+% A gate must have at least one output connection if its arityout is greater than 0
 N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
 
 %%%%%%%%%%%
@@ -177,9 +178,9 @@ assert(6, y3, 0).
 assert(7, x1, 1).
 assert(7, x2, 1).
 assert(7, x3, 1).
-assert(7, y1, 0).
-assert(7, y2, 0).
-assert(7, y3, 1).
+assert(7, y1, 1).
+assert(7, y2, 1).
+assert(7, y3, 0).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
