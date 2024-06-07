@@ -12,6 +12,10 @@ Construct and activate a virtual environment
 
 `source ./venv/bin/activate`
 
+Install the package
+
+`pip3 install .`
+
 Run the module from the root of the project directory
 
 `python3 -m circonf`
