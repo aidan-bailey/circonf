@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "graphconf"
+name = "circonf"
 version = "0.0.0.dev0"
 authors = [
   { name="Aidan Bailey", email="dev@aidanbailey.me" },
@@ -11,7 +11,7 @@ authors = [
 maintainers = [
   { name="Aidan Bailey", email="dev@aidanbailey.me" },
 ]
-description = "print graph good"
+description = "Design logical circuits"
 readme = {file = "README.md", content-type = "text/markdown"}
 license = {file = "LICENSE.txt", content-type = "text/markdown"}
 requires-python = ">=3.8"
@@ -25,5 +25,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/aidan-bailey/graphconf"
-Repository = "https://github.com/aidan-bailey/graphconf"
+Homepage = "https://github.com/aidan-bailey/circonf"
+Repository = "https://github.com/aidan-bailey/circonf"
