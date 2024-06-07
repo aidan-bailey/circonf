@@ -37,67 +37,68 @@ def main():
 
     ctx = Context(5, 5, ["a", "b", "c", "d"], [("a", "b")])
     ctl = clingo.Control()
-    with open("/Users/aidanbailey/Source/School/graphconf/graphconf.lp", "r") as f:
+    with open("/Users/aidanbailey/Source/School/graphconf/choosegates.lp", "r") as f:
         code = f.read()
     ctl.add("base", [], code)
 
     graphs = []
 
     def on_model(model):
-        #graph = [["  " for row in range(5)] for col in range(5)]
-        nodepositions = {}
-        segments = []
         symbols = model.symbols(atoms=True)
-        for symbol in symbols:
-            if symbol.name == "node":
-                (x, y, n) = symbol.arguments
-                nodepositions[n.name] = (x.number - 1, y.number - 1)
-            elif symbol.name == "wirestart":
-                (x1, y1, x2, y2, v1, v2) = symbol.arguments
-                segments.append((x1.number - 1, y1.number - 1, x2.number - 1, y2.number - 1, v1, v2))
-            elif symbol.name == "wireend":
-                (x1, y1, x2, y2, v1, v2) = symbol.arguments
-                segments.append((x1.number - 1, y1.number - 1, x2.number - 1, y2.number - 1, v1, v2))
-            elif symbol.name == "segment":
-                (x1, y1, x2, y2, v1, v2) = symbol.arguments
-                segments.append((x1.number - 1, y1.number - 1, x2.number - 1, y2.number - 1, v1, v2))
 
-        G = nx.Graph()
-
-        pos = {}
-        color = []
+        gate_types = {}
         edges = []
-        labels = {
 
-        }
+        for symbol in symbols:
+            if symbol.name == "gate_type":
+                try:
+                    g1 = symbol.arguments[0].name
+                except:
+                    g1 = str(symbol.arguments[0].number)
+                gate_type = symbol.arguments[1].name
+                gate_types[g1] = gate_type
+            if symbol.name == "con":
+                try:
+                    g1 = symbol.arguments[0].name
+                except:
+                    g1 = str(symbol.arguments[0].number)
+                try:
+                    g2 = symbol.arguments[1].name
+                except:
+                    g2 = str(symbol.arguments[1].number)
+                edges.append((g1, g2))
 
-        for node, (x, y) in nodepositions.items():
-            G.add_node(node)
-            pos[node] = (x, y)
-            labels[node] = node
-            color.append((165/255, 114/255, 169/255, 1))
+        G = nx.DiGraph()
 
-        for (x1, y1, x2, y2, v1, v2) in segments:
-            pos[f"{v1}{v2},{x1},{y1},{x2},{y2},start"] = (x1, y1)
-            labels[f"{v1}{v2},{x1},{y1},{x2},{y2},start"] = ""
-            pos[f"{v1}{v2},{x1},{y1},{x2},{y2},end"] = (x2, y2)
-            labels[f"{v1}{v2},{x1},{y1},{x2},{y2},end"] = ""
-            color.append((0, 0, 0, 0))
-            color.append((0, 0, 0, 0))
-            G.add_edge(f"{v1}{v2},{x1},{y1},{x2},{y2},start", f"{v1}{v2},{x1},{y1},{x2},{y2},end")
+        labels = {}
 
-        G.add_edges_from(edges)
+        for gate, (gate_type) in gate_types.items():
 
-        graphs.append(lambda: nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15))
-        nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15)
+            if gate_type == "or_g":
+                gs = "∨"
+            elif gate_type == "and_g":
+                gs = "∧"
+            elif gate_type == "xor_g":
+                gs = "⊕"
+            elif gate_type == "not_g":
+                gs = "¬"
+            else:
+                gs = gate
+
+            labels[gate] = gs
+            G.add_node(gate)
+
+        for (g1, g2) in edges:
+            G.add_edge(g1, g2)
+
+        graphs.append(lambda: nx.draw(G, labels=labels, with_labels=True, node_size=300, font_size=15))
+        nx.draw(G, labels=labels, with_labels=True, node_size=300, font_size=15)
 
         plt.show()
 
 
     ctl.ground([("base", [])], context=ctx)
     sol = ctl.solve(on_model=on_model)
-    #graphs[-1]()
-    #plt.show()
 
 if __name__ == "__main__":
     main()
