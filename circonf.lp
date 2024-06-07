@@ -133,9 +133,6 @@ gate_type(y1, destination).
 gate(y2).
 gate_type(y2, destination).
 
-gate(y3).
-gate_type(y3, destination).
-
 state(1; 2; 3; 4; 5; 6; 7).
 
 assert(1, x1, 0).
@@ -143,49 +140,42 @@ assert(1, x2, 0).
 assert(1, x3, 0).
 assert(1, y1, 0).
 assert(1, y2, 0).
-assert(1, y3, 0).
 
 assert(2, x1, 1).
 assert(2, x2, 0).
 assert(2, x3, 0).
 assert(2, y1, 1).
 assert(2, y2, 0).
-assert(2, y3, 0).
 
 assert(3, x1, 0).
 assert(3, x2, 1).
 assert(3, x3, 0).
 assert(3, y1, 1).
 assert(3, y2, 0).
-assert(3, y3, 0).
 
 assert(4, x1, 0).
 assert(4, x2, 0).
 assert(4, x3, 1).
 assert(4, y1, 1).
 assert(4, y2, 0).
-assert(4, y3, 0).
 
 assert(5, x1, 1).
 assert(5, x2, 1).
 assert(5, x3, 0).
 assert(5, y1, 0).
 assert(5, y2, 1).
-assert(5, y3, 0).
 
 assert(6, x1, 0).
 assert(6, x2, 1).
 assert(6, x3, 1).
 assert(6, y1, 0).
 assert(6, y2, 1).
-assert(6, y3, 0).
 
 assert(7, x1, 1).
 assert(7, x2, 1).
 assert(7, x3, 1).
 assert(7, y1, 1).
 assert(7, y2, 1).
-assert(7, y3, 0).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
