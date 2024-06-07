@@ -73,12 +73,15 @@ def main():
                 G, labels=labels, with_labels=True, node_size=300, font_size=15
             )
         )
-        nx.draw(G, labels=labels, with_labels=True, node_size=300, font_size=15)
 
-        plt.show()
+        graphs.append((G, labels))
+
 
     ctl.ground([("base", [])], context=ctx)
     sol = ctl.solve(on_model=on_model)
+    (graph, labels) = graphs[-1]
+    nx.draw(graph, labels=labels, with_labels=True, node_size=300, font_size=15)
+    plt.show()
 
 
 if __name__ == "__main__":
