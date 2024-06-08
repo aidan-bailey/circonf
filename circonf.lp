@@ -179,6 +179,17 @@ assert(7, y2, 1).
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
+spath(G1, G3) :- con(G1, G2), con(G2, G3).
+
+%%%%%%%%%%
+% CONFIG %
+%%%%%%%%%%
+
+disconnectedouts(0).
+G1 = G2 :-
+    spath(G1, G2), gate_type(G2, destination),
+    spath(G2, G3), gate_type(G3, destination),
+    disconnectedouts(1).
 
 %%%%%%%%%%%%
 % OPTIMISE %
