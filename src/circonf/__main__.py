@@ -15,7 +15,7 @@ class Context:
 def main():
     ctx = Context()
     ctl = clingo.Control()
-    with open(os.path.join(os.curdir, "circonf.lp"), "r") as f:
+    with open(os.path.join(os.curdir, "logic/circonf.lp"), "r") as f:
         code = f.read()
     ctl.add("base", [], code)
 
@@ -67,12 +67,6 @@ def main():
 
         for g1, g2 in edges:
             G.add_edge(g1, g2)
-
-        graphs.append(
-            lambda: nx.draw(
-                G, labels=labels, with_labels=True, node_size=300, font_size=15
-            )
-        )
 
         graphs.append((G, labels))
 
