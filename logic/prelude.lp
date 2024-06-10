@@ -8,7 +8,7 @@
 signal(0; 1).
 
 % Static terminal types
-terminal_type(tin; tout).
+io(input; output).
 
 %%%%%%%%%%%%%%%%%%
 % SPECIFICATIONS %
@@ -32,11 +32,11 @@ terminal_type(tin; tout).
 % arity(T, A, IO).
 % T : type(T)
 % A : Natural number
-% IO : terminal_type(IO)
+% IO : io(IO)
 
 % An arity cannot exist if there is no evidence for the IO type
 
-:- arity(_, _, IO), not terminal_type(IO).
+:- arity(_, _, IO), not io(IO).
 
 % An arity cannot exist if the we have no evidence for the gate type
 
@@ -53,13 +53,13 @@ terminal_type(tin; tout).
 % terminal(G, I, IO)
 % G : gate(G)
 % I : gate_type(G, T), arityin(T, N), I > 0, I < N
-% IO : terminal_type(IO)
+% IO : io(IO)
 
 % A terminal cannot exist for a gate that has no evidence
 :- terminal(G, _, _), not gate(G).
 
 % A terminal cannot exist if it is not input or output
-:- terminal(_, _, IO), not terminal_type(IO).
+:- terminal(_, _, IO), not io(IO).
 
 % A terminal is constructed for each gates input and output arity
 terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, N, IO).
@@ -116,8 +116,8 @@ eval(V, G1, N1, G2, N2, S2) :-
 % Iin :
 
 % There must be explicit evidence for each terminal
-:- connection(G, I, _, _), not terminal(G, I, tout).
-:- connection(_, _, G, I), not terminal(G, I, tin).
+:- connection(G, I, _, _), not terminal(G, I, output).
+:- connection(_, _, G, I), not terminal(G, I, input).
 
 % There cannot be multiple connections to the same input pin
 G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
