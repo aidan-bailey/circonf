@@ -3,7 +3,8 @@
 #include "gates/and.lp".
 #include "gates/or.lp".
 #include "gates/xor.lp".
-#include "gates/generation.lp".
+#include "generate/gates.lp".
+#include "generate/constraints.lp".
 
 gate(x1).
 gate_type(x1, source).
