@@ -10,13 +10,38 @@ signal(0; 1).
 % GATE %
 %%%%%%%%
 
+% gate(G).
+% G : Gate id
+
+% type(T).
+% T : Gate type
+
 % gate_type(G, T)
 % G : gate(G)
 % T : type(T)
 
+% A gate type cannot exist when G is not a gate or T is not a gate type
+
+:- gate_type(G, _), not gate(G).
+:- gate_type(_, T), not type(T).
+
 % arityout(T, A).
 % T : type(T)
-% A : Number
+% A : Natural number
+
+% arityin(T, A).
+% T : type(T)
+% A : Natural number
+
+% An arity cannot exist if the we have no evidence for the gate type
+
+:- arityout(T, _), not type(T).
+:- arityin(T, _), not type(T).
+
+% An arity cannot exist that is less than 0
+
+:- arityout(_, A), A < 0.
+:- arityin(_, A), A < 0.
 
 %%%%%%%%%%%%
 % TERMINAL %
@@ -29,6 +54,9 @@ terminal_type(tin; tout).
 % G : gate(G)
 % I : gate_type(G, T), arityin(T, N), I > 0, I < N
 % IO : terminal_type(IO)
+
+% A terminal cannot exist for a gate that has no evidence
+:- terminal(G, _, _), not gate(G).
 
 terminal(G, 1..N, tin) :- gate(G), gate_type(G, T), arityin(T, N).
 terminal(G, 1..N, tout) :- gate(G), gate_type(G, T), arityout(T, N).
