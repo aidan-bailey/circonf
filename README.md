@@ -16,7 +16,8 @@ Install the package
 
 `pip3 install .`
 
-Run the module from the root of the project directory
+Run the module from the *logic* directory
 
+`cd logic`
 `python3 -m circonf`
 
