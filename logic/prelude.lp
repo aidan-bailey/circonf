@@ -89,3 +89,10 @@ G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
 I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 #include "gates/special.lp".
+
+% Truth
+
+% valuation(N, A, V)
+% N : Natural number
+% A : gate(G)
+% V : signal(V)
