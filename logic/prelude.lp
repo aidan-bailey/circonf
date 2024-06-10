@@ -76,6 +76,7 @@ valuation(1..2**N) :- #count{G: gate_type(G, source)} = N.
 % G : gate(G)
 % S : signal(S)
 
+:- not assign(N, _, _), valuation(N).
 :- assign(N, _, _), not valuation(N).
 :- assign(_, G, _), not gate(G).
 :- assign(_, _, S), not signal(S).
@@ -97,13 +98,10 @@ S1 = S2 :- assign(N, G, S1), assign(N, G, S2).
 
 S1 = S2 :- eval(V, G1, N1, G2, N2, S1), eval(V, G1, N1, G2, N2, S2), valuation(V).
 
-eval(V, G1, N1, G2, N2, S2) :-
+eval(V, G1, N1, G2, N2, 0) :-
     connection(G1, N1, G2, N2),
-    not eval(V, G1, N1, G2, N2, S),
-    signal(S), S = 1, S2 = 0,
+    not eval(V, G1, N1, G2, N2, _),
     valuation(V).
-
-%:- eval(_, G1, N1, G2, N2, _), not connection(G1, N1, G2, G2).
 
 %%%%%%%%%%
 % HYBRID %
