@@ -1,14 +1,18 @@
 #include "defaults.lp".
 
-%%%%%%%%%%
-% SIGNAL %
-%%%%%%%%%%
+%%%%%%%%%%%
+% STATICS %
+%%%%%%%%%%%
 
+% True/False signals
 signal(0; 1).
 
-%%%%%%%%
-% GATE %
-%%%%%%%%
+% Static terminal types
+terminal_type(tin; tout).
+
+%%%%%%%%%%%%%%%%%%
+% SPECIFICATIONS %
+%%%%%%%%%%%%%%%%%%
 
 % gate(G).
 % G : Gate id
@@ -42,12 +46,9 @@ signal(0; 1).
 
 :- arity(_, A, _), A < 0.
 
-%%%%%%%%%%%%
-% TERMINAL %
-%%%%%%%%%%%%
-
-% Static terminal types
-terminal_type(tin; tout).
+%%%%%%%%%%%%%%%
+% CONSTRUCTED %
+%%%%%%%%%%%%%%%
 
 % terminal(G, I, IO)
 % G : gate(G)
@@ -57,19 +58,11 @@ terminal_type(tin; tout).
 % A terminal cannot exist for a gate that has no evidence
 :- terminal(G, _, _), not gate(G).
 
+% A terminal cannot exist if it is not input or output
+:- terminal(_, _, IO), not terminal_type(IO).
+
+% A terminal is constructed for each gates input and output arity
 terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, N, IO).
-
-%%%%%%%%%%%%%%
-% CONNECTION %
-%%%%%%%%%%%%%%
-
-% connection(Gout, Iout, Gin, Iin)
-% Gout : gate(Gout)
-% Iout :
-% Gin : gate(Gin)
-% Iin :
-
-% Connection
 
 % Valuation
 
@@ -77,22 +70,22 @@ val(S, G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(S, G1, N1, G2,
 
 V1 = V2 :- val(S, G1, N1, G2, N2, V1), val(S, G1, N1, G2, N2, V2), state(S).
 
-% Source
+%%%%%%%%%%
+% HYBRID %
+%%%%%%%%%%
 
-type(source).
-arity(source, 0, tin).
-arity(source, 10, tout).
+% connection(Gout, Iout, Gin, Iin)
+% Gout : gate(Gout)
+% Iout :
+% Gin : gate(Gin)
+% Iin :
 
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assert(S, G1, V), state(S).
+% There must be explicit evidence for each terminal
+:- connection(G, I, _, _), not terminal(G, I, tout).
+:- connection(_, _, G, I), not terminal(G, I, tin).
 
-% Destination
+% There cannot be multiple connections to the same input pin
+G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
+I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
-type(destination).
-arity(destination, 1, tin).
-arity(destination, 0, tout).
-
-val(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assert(S, G2, V), state(S).
-
-con(G1, G2) :- connection(G1, N1, G2, N2).
-conval(S, G1, V) :- val(S, G1, 1, G2, N2, V).
-spath(G1, G3) :- con(G1, G2), con(G2, G3).
+#include "gates/special.lp".
