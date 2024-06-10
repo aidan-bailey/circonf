@@ -66,9 +66,44 @@ terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, N, IO).
 
 % Valuation
 
-val(S, G1, N1, G2, N2, V2) :- connection(G1, N1, G2, N2), not val(S, G1, N1, G2, N2, V), signal(V), V = 1, V2 = 0, state(S).
+% valuation(N)
+% N : Natural number
 
-V1 = V2 :- val(S, G1, N1, G2, N2, V1), val(S, G1, N1, G2, N2, V2), state(S).
+valuation(1..2**N) :- #count{G: gate_type(G, source)} = N.
+
+% assign(N, G, S)
+% N : valuation(N)
+% G : gate(G)
+% S : signal(S)
+
+:- assign(N, _, _), not valuation(N).
+:- assign(_, G, _), not gate(G).
+:- assign(_, _, S), not signal(S).
+
+S1 = S2 :- assign(N, G, S1), assign(N, G, S2).
+
+% Eval
+
+% eval(S, G1, N1, G2, N2, V2)
+% S
+% G1
+% N1
+% G2
+% N2
+% V2
+
+% There must be evidence of a valuation for there to be an evaluation
+:- eval(N, _, _, _, _, _), not valuation(N).
+
+S1 = S2 :- eval(V, G1, N1, G2, N2, S1), eval(V, G1, N1, G2, N2, S2), valuation(V).
+
+eval(V, G1, N1, G2, N2, S2) :-
+    connection(G1, N1, G2, N2),
+    not eval(V, G1, N1, G2, N2, S),
+    signal(S), S = 1, S2 = 0,
+    valuation(V).
+
+%:- eval(_, G1, N1, G2, N2, _), not connection(G1, N1, G2, G2).
 
 %%%%%%%%%%
 % HYBRID %
@@ -89,10 +124,3 @@ G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
 I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 #include "gates/special.lp".
-
-% Truth
-
-% valuation(N, A, V)
-% N : Natural number
-% A : gate(G)
-% V : signal(V)

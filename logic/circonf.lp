@@ -20,49 +20,55 @@ gate_type(y1, destination).
 gate(y2).
 gate_type(y2, destination).
 
-state(1; 2; 3; 4; 5; 6; 7).
+valuation(1; 2; 3; 4; 5; 6; 7; 8).
 
-valuation(1, x1, 0).
-valuation(1, x2, 0).
-valuation(1, x3, 0).
-valuation(1, y1, 0).
-valuation(1, y2, 0).
+assign(1, x1, 0).
+assign(1, x2, 0).
+assign(1, x3, 0).
+assign(1, y1, 0).
+assign(1, y2, 0).
 
-valuation(2, x1, 1).
-valuation(2, x2, 0).
-valuation(2, x3, 0).
-valuation(2, y1, 1).
-valuation(2, y2, 0).
+assign(2, x1, 1).
+assign(2, x2, 0).
+assign(2, x3, 0).
+assign(2, y1, 1).
+assign(2, y2, 0).
 
-valuation(3, x1, 0).
-valuation(3, x2, 1).
-valuation(3, x3, 0).
-valuation(3, y1, 1).
-valuation(3, y2, 0).
+assign(3, x1, 0).
+assign(3, x2, 1).
+assign(3, x3, 0).
+assign(3, y1, 1).
+assign(3, y2, 0).
 
-valuation(4, x1, 0).
-valuation(4, x2, 0).
-valuation(4, x3, 1).
-valuation(4, y1, 1).
-valuation(4, y2, 0).
+assign(4, x1, 0).
+assign(4, x2, 0).
+assign(4, x3, 1).
+assign(4, y1, 1).
+assign(4, y2, 0).
 
-valuation(5, x1, 1).
-valuation(5, x2, 1).
-valuation(5, x3, 0).
-valuation(5, y1, 0).
-valuation(5, y2, 1).
+assign(5, x1, 1).
+assign(5, x2, 1).
+assign(5, x3, 0).
+assign(5, y1, 0).
+assign(5, y2, 1).
 
-valuation(6, x1, 0).
-valuation(6, x2, 1).
-valuation(6, x3, 1).
-valuation(6, y1, 0).
-valuation(6, y2, 1).
+assign(6, x1, 0).
+assign(6, x2, 1).
+assign(6, x3, 1).
+assign(6, y1, 0).
+assign(6, y2, 1).
 
-valuation(7, x1, 1).
-valuation(7, x2, 1).
-valuation(7, x3, 1).
-valuation(7, y1, 1).
-valuation(7, y2, 1).
+assign(7, x1, 1).
+assign(7, x2, 1).
+assign(7, x3, 1).
+assign(7, y1, 1).
+assign(7, y2, 1).
+
+assign(8, x1, 1).
+assign(8, x2, 0).
+assign(8, x3, 1).
+assign(8, y1, 0).
+assign(8, y2, 1).
 
 %%%%%%%%%%%%
 % OPTIMISE %
@@ -72,3 +78,5 @@ valuation(7, y2, 1).
 
 #show gate_type/2.
 #show con/2.
+
+%#show sourceGates/1.
