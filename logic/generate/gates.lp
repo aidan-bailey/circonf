@@ -11,4 +11,4 @@ gate(1..N) :- gateCount(N).
 :- terminal(G, N, input), not connection(_, _, G, N).
 
 % A gate must have at least one output connection if its arityout is greater than 0
-N = 0 :- gate(G), gate_type(G, T), arity(T, N, output), not connection(G, _, _, _).
+N = 0 :- gate(G), gate_type(G, T), arity(T, output, N), not connection(G, _, _, _).

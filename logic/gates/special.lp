@@ -1,16 +1,16 @@
 % Source
 
 type(source).
-arity(source, 0, input).
-arity(source, 10, output).
+arity(source, input, 0).
+arity(source, output, 10).
 
 eval(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G1, source), assign(S, G1, V), valuation(S).
 
 % Destination
 
 type(destination).
-arity(destination, 1, input).
-arity(destination, 0, output).
+arity(destination, input, 1).
+arity(destination, output, 0).
 
 eval(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destination), assign(S, G2, V), valuation(S).
 

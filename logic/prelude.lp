@@ -31,20 +31,20 @@ io(input; output).
 
 % arity(T, A, IO).
 % T : type(T)
-% A : Natural number
 % IO : io(IO)
-
-% An arity cannot exist if there is no evidence for the IO type
-
-:- arity(_, _, IO), not io(IO).
+% A : Natural number
 
 % An arity cannot exist if the we have no evidence for the gate type
 
 :- arity(T, _, _), not type(T).
 
+% An arity cannot exist if there is no evidence for the IO type
+
+:- arity(_, IO, _), not io(IO).
+
 % An arity cannot exist that is less than 0
 
-:- arity(_, A, _), A < 0.
+:- arity(_, _, A), A < 0.
 
 %%%%%%%%%%%%%%%
 % CONSTRUCTED %
@@ -62,7 +62,7 @@ io(input; output).
 :- terminal(_, _, IO), not io(IO).
 
 % A terminal is constructed for each gates input and output arity
-terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, N, IO).
+terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, IO, N).
 
 % Valuation
 
