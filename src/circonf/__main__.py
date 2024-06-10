@@ -1,4 +1,5 @@
 import os
+import sys
 
 import clingo
 import matplotlib.pyplot as plt
@@ -13,9 +14,15 @@ class Context:
 
 
 def main():
+
+    if len(sys.argv) < 2:
+        main_path = "circonf.lp"
+    else:
+        main_path = sys.argv[1]
+
     ctx = Context()
     ctl = clingo.Control()
-    with open(os.path.join(os.curdir, "logic/circonf.lp"), "r") as f:
+    with open(main_path, "r") as f:
         code = f.read()
     ctl.add("base", [], code)
 
