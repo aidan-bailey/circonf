@@ -19,4 +19,4 @@ G1 = G2 :- connection(G1, N, G, N), connection(G2, N, G, N).
 N1 = N2 :- connection(G, N1, G, N), connection(G, N2, G, N).
 
 % A gate must have at least one output connection if its arityout is greater than 0
-N = 0 :- gate(G), gate_type(G, T), arityout(T, N), not connection(G, _, _, _).
+N = 0 :- gate(G), gate_type(G, T), arity(T, N, tout), not connection(G, _, _, _).
