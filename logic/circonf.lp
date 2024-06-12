@@ -13,7 +13,7 @@ gate(x2).
 gate_type(x2, source).
 
 gate(1).
-gate_type(1, and_g).
+gate_type(1, or_g).
 
 connection(x1, 1, 1, 1).
 connection(x2, 1, 1, 2).
@@ -30,5 +30,6 @@ gate_type(y1, destination).
 
 %#show gate_type/2.
 #show val/3.
+%#show assign/3.
 
 %#show sourceGates/1.

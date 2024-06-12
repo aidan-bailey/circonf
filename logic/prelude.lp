@@ -73,6 +73,8 @@ atomCount(N) :- #count{G: gate_type(G, source)} = N.
 
 valuation(1..2**N) :- atomCount(N).
 
+valuationCount(N) :- #count{V: valuation(V)} = N.
+
 % assign(N, G, S)
 % N : valuation(N)
 % G : gate(G)
