@@ -3,7 +3,6 @@
 #include "gates/and.lp".
 #include "gates/or.lp".
 #include "gates/xor.lp".
-%#include "generate/gates.lp".
 #include "generate/assignments.lp".
 
 gate(x1).
