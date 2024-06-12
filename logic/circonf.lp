@@ -33,5 +33,6 @@ gate_type(y1, destination).
 
 
 #show model/2.
+#show entails/2.
 
 %#show sourceGates/1.
