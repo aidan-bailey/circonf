@@ -69,7 +69,9 @@ terminal(G, 1..N, IO) :- gate(G), gate_type(G, T), arity(T, IO, N).
 % valuation(N)
 % N : Natural number
 
-valuation(1..2**N) :- #count{G: gate_type(G, source)} = N.
+atomCount(N) :- #count{G: gate_type(G, source)} = N.
+
+valuation(1..2**N) :- atomCount(N).
 
 % assign(N, G, S)
 % N : valuation(N)
@@ -98,9 +100,8 @@ S1 = S2 :- assign(N, G, S1), assign(N, G, S2).
 
 S1 = S2 :- eval(V, G1, N1, G2, N2, S1), eval(V, G1, N1, G2, N2, S2), valuation(V).
 
-eval(V, G1, N1, G2, N2, 0) :-
-    connection(G1, N1, G2, N2),
-    not eval(V, G1, N1, G2, N2, _),
+eval(V, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2),
+    not eval(V, G1, N1, G2, N2, 1),
     valuation(V).
 
 %%%%%%%%%%
@@ -122,3 +123,6 @@ G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
 I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 #include "gates/special.lp".
+
+val(V, G, S) :- valuation(V), gate_type(G, source), assign(V, G, S).
+val(V, G, S) :- eval(V, _, _, G, _, S), valuation(V), gate_type(G, destination).

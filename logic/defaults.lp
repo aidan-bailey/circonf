@@ -1,5 +1,5 @@
 % Minimum number of logic gates
-#const minGates = 1.
+#const minGates = 30.
 
 % Maximum number of logic gates
-#const maxGates = 10.
+#const maxGates = 30.
