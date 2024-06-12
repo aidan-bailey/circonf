@@ -128,3 +128,5 @@ I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 val(V, G, S) :- valuation(V), gate_type(G, source), assign(V, G, S).
 val(V, G, S) :- eval(V, _, _, G, _, S), valuation(V), gate_type(G, destination).
+
+formula(Gdest, G) :- spath(G, Gdest), gate_type(Gdest, destination).

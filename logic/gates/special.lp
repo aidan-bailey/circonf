@@ -16,4 +16,5 @@ eval(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), gate_type(G2, destinat
 
 con(G1, G2) :- connection(G1, N1, G2, N2).
 coneval(S, G1, V) :- eval(S, G1, 1, G2, N2, V).
+spath(G1, G2) :- con(G1, G2).
 spath(G1, G3) :- con(G1, G2), con(G2, G3).

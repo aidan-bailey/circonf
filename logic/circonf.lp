@@ -25,10 +25,10 @@ gate_type(y1, destination).
 % OPTIMISE %
 %%%%%%%%%%%%
 
-#minimize{N: gateCount(N)}.
-
 %#show gate_type/2.
-#show val/3.
+%#show val/3.
 %#show assign/3.
+
+#show formula/2.
 
 %#show sourceGates/1.
