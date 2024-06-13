@@ -1,10 +1,10 @@
 % Source
 
-type(source).
-arity(source, input, 0).
-arity(source, output, 10).
+type(atom).
+arity(atom, input, 0).
+arity(atom, output, 10).
 
-eval(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), connective_type(G1, source), assign(S, G1, V), valuation(S).
+eval(S, G1, N1, G2, N2, V) :- connection(G1, N1, G2, N2), connective_type(G1, atom), assign(S, G1, V), valuation(S).
 
 % Destination
 

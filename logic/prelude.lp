@@ -69,7 +69,7 @@ terminal(G, 1..N, IO) :- connective(G), connective_type(G, T), arity(T, IO, N).
 % valuation(N)
 % N : Natural number
 
-atomCount(N) :- #count{G: connective_type(G, source)} = N.
+atomCount(N) :- #count{G: connective_type(G, atom)} = N.
 
 valuation(1..2**N) :- atomCount(N).
 
@@ -126,7 +126,7 @@ I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 #include "connectives/atom.lp".
 
-val(V, G, S) :- valuation(V), connective_type(G, source), assign(V, G, S).
+val(V, G, S) :- valuation(V), connective_type(G, atom), assign(V, G, S).
 val(V, G, S) :- eval(V, _, _, G, _, S), valuation(V), connective_type(G, destination).
 
 formula(Gdest, G) :- spath(G, Gdest), connective_type(Gdest, destination).

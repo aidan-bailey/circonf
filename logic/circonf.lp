@@ -6,10 +6,10 @@
 #include "semantics.lp".
 
 connective(x1).
-connective_type(x1, source).
+connective_type(x1, atom).
 
 connective(x2).
-connective_type(x2, source).
+connective_type(x2, atom).
 
 connective(1).
 connective_type(1, and_g).
@@ -33,4 +33,4 @@ connective_type(y1, destination).
 #show model/2.
 #show entails/2.
 
-%#show sourceGates/1.
+%#show atomGates/1.
