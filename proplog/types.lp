@@ -56,7 +56,7 @@ input(F, 1..A) :- connective(F, T), arity(T, A).
 
 models(F, Num) :- formula(F, _), #max{N: model(F, N, _)} = Num.
 
-:- model(F, _, _), not formula(F, _).
+%:- model(F, _, _), not formula(F, _).
 
 %model(F, 1, verum) :- constant(F, verum).
 
@@ -113,11 +113,8 @@ entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1), F1 != F2.
 
 entails(F1, F2) :- formula(F1, _), formula(F2, _), subsumes(F1, F2), F1 != F2.
 
-entails(Kb, F2) :-
-    formula(F2, _),
-    formulas(Kb, N),
-    knowledgeBase(Kb, _),
-    #count{F1: knowledgeBase(Kb, F1), entails(F1, F2)} = N.
+model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
+model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 
 :- knowledgeBase(Kb, _), formula(F, _), Kb = F.
 
@@ -126,21 +123,12 @@ entails(Kb, F2) :-
 atom(a).
 atom(b).
 
-connective(orgate, org).
-connection(a, orgate, 1).
-connection(b, orgate, 2).
+connective(notgate, notg).
+connection(a, notgate, 1).
 
-connective(andgate, andg).
-connection(a, andgate, 1).
-connection(b, andgate, 2).
+knowledgeBase(kb1, notgate).
+knowledgeBase(kb1, b).
 
-connective(contgate, andg).
-connection(a, contgate, 1).
-
-connective(contnot, notg).
-connection(a, contnot, 1).
-
-connection(contnot, contgate, 2).
-
-#show entails/2.
 %#show model/3.
+#show entails/2.
+%#show knowledgeBase/2.
