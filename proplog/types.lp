@@ -62,7 +62,7 @@ models(F, Num) :- formula(F, _), #max{N: model(F, N, _)} = Num.
 
 %model(F, 1, falsum) :- constant(F, falsum).
 
-model(F, 1, L) :- formula(F, atom), L = lit(F).
+model(F, 1, L) :- formula(F, atom), L = F.
 
 model(F, 1, L) :- connective(F, org), connection(Fout, F, 1), model(Fout, C, L).
 model(F, 2, L) :- connective(F, org), connection(Fout, F, 2), model(Fout, C, L).
@@ -130,6 +130,5 @@ connection(b, andgate, 2).
 knowledgeBase(kb1, a).
 knowledgeBase(kb1, b).
 
-%#show model/3.
 #show entails/2.
 %#show knowledgeBase/2.
