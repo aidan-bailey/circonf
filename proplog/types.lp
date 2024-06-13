@@ -58,6 +58,10 @@ models(F, Num) :- formula(F, _), #max{N: model(F, N, _)} = Num.
 
 :- model(F, _, _), not formula(F, _).
 
+%model(F, 1, verum) :- constant(F, verum).
+
+%model(F, 1, falsum) :- constant(F, falsum).
+
 model(F, 1, L) :- formula(F, atom), L = lit(F).
 
 model(F, 1, L) :- connective(F, org), connection(Fout, F, 1), model(Fout, C, L).
@@ -101,9 +105,18 @@ subsumes(F1, F2) :-
     clauses(F2, N),
     #count{C2: subsumes(F1, F2, C2)} = N.
 
+formulas(Kb, N) :-
+    knowledgeBase(Kb, _),
+    #count{F: knowledgeBase(Kb, F)} = N.
+
 entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1), F1 != F2.
 
-entails(F1, F2) :- subsumes(F1, F2), F1 != F2.
+entails(F1, F2) :- formula(F1, _), formula(F2, _), subsumes(F1, F2), F1 != F2.
+
+entails(Kb, F2) :-
+    formula(F2, _),
+    formulas(Kb, N),
+    #count{F1: knowledgeBase(Kb, F1), entails(F1, F2)} = N.
 
 %%%%%%%%%%%%
 
