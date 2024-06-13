@@ -116,6 +116,7 @@ entails(F1, F2) :- formula(F1, _), formula(F2, _), subsumes(F1, F2), F1 != F2.
 entails(Kb, F2) :-
     formula(F2, _),
     formulas(Kb, N),
+    knowledgeBase(Kb, _),
     #count{F1: knowledgeBase(Kb, F1), entails(F1, F2)} = N.
 
 %%%%%%%%%%%%
