@@ -86,22 +86,30 @@ literals(F, C, N) :- clause(F, C), #count{L: model(F, C, L)} = N.
 %    literals(F1, C1, N),
 %    #count{L: model(F2, C2, L), model(F1, C1, L)} = N.
 
+% all the literals in C2 can be found in C1
 subsumes(F1, C1, F2, C2) :-
     clause(F1, C1),
     clause(F2, C2),
     literals(F2, C2, N),
     #count{L: model(F2, C2, L), model(F1, C1, L)} = N.
 
+% all the clauses in F1 subsume C2
+subsumes(F1, F2, C2) :-
+    formula(F1, _),
+    clause(F2, C2),
+    clauses(F1, N),
+    #count{C1: subsumes(F1, C1, F2, C2)} = N.
 
-
-entails(F2, F1) :- formula(F1, _), formula(F2, _), contr(F2).
-
-entails(F2, F1) :-
+% all the clauses in F2 are subsumed by all the clauses in F1
+subsumes(F1, F2) :-
     formula(F1, _),
     formula(F2, _),
     clauses(F2, N),
-    F1 != F2,
-    #count{C1: subsumes(F1, C1, F2, C2)} = N.
+    #count{C2: subsumes(F1, F2, C2)} = N.
+
+entails(F2, F1) :- formula(F1, _), formula(F2, _), contr(F2).
+
+entails(F1, F2) :- subsumes(F1, F2), F1 != F2.
 
 %%%%%%%%%%%%
 
