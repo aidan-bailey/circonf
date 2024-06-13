@@ -80,20 +80,14 @@ clause(F, C) :- model(F, C, _).
 clauses(F, N) :- #count{C: clause(F, C)} = N, formula(F, _).
 literals(F, C, N) :- clause(F, C), #count{L: model(F, C, L)} = N.
 
-%subsumes(F1, C1, F2, C2) :-
-%    clause(F1, C1),
-%    clause(F2, C2),
-%    literals(F1, C1, N),
-%    #count{L: model(F2, C2, L), model(F1, C1, L)} = N.
-
-% all the literals in C2 can be found in C1
+% C2 is subsumed by C1
 subsumes(F1, C1, F2, C2) :-
     clause(F1, C1),
     clause(F2, C2),
     literals(F2, C2, N),
     #count{L: model(F2, C2, L), model(F1, C1, L)} = N.
 
-% all the clauses in F1 subsume C2
+% C2 is subsumed by all the clauses in F1
 subsumes(F1, F2, C2) :-
     formula(F1, _),
     clause(F2, C2),
@@ -107,7 +101,7 @@ subsumes(F1, F2) :-
     clauses(F2, N),
     #count{C2: subsumes(F1, F2, C2)} = N.
 
-entails(F2, F1) :- formula(F1, _), formula(F2, _), contr(F2).
+entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1).
 
 entails(F1, F2) :- subsumes(F1, F2), F1 != F2.
 
@@ -123,6 +117,10 @@ connection(b, orgate, 2).
 connective(andgate, andg).
 connection(a, andgate, 1).
 connection(b, andgate, 2).
+
+connective(contgate, andg).
+connection(a, contgate, 1).
+connection(b, contgate, 2).
 
 #show entails/2.
 %#show model/3.
