@@ -13,4 +13,4 @@ connective(1..N) :- connectiveCount(N).
 % A connective must have at least one output connection if its arityout is greater than 0
 N = 0 :- connective(G), connective_type(G, T), arity(T, output, N), not connection(G, _, _, _).
 
-:- connection(G1, _, G2, _), G1 = G2.
+:- connection(F1, _, F2, _), F1 = F2.

@@ -89,21 +89,21 @@ S1 = S2 :- assign(N, G, S1), assign(N, G, S2).
 
 % Eval
 
-% eval(S, G1, N1, G2, N2, V2)
+% eval(S, F1, N1, F2, N2, V2)
 % S
-% G1
+% F1
 % N1
-% G2
+% F2
 % N2
 % V2
 
 % There must be evidence of a valuation for there to be an evaluation
 :- eval(N, _, _, _, _, _), not valuation(N).
 
-S1 = S2 :- eval(V, G1, N1, G2, N2, S1), eval(V, G1, N1, G2, N2, S2), valuation(V).
+S1 = S2 :- eval(V, F1, N1, F2, N2, S1), eval(V, F1, N1, F2, N2, S2), valuation(V).
 
-eval(V, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2),
-    not eval(V, G1, N1, G2, N2, 1),
+eval(V, F1, N1, F2, N2, 0) :- connection(F1, N1, F2, N2),
+    not eval(V, F1, N1, F2, N2, 1),
     valuation(V).
 
 %%%%%%%%%%
@@ -121,7 +121,7 @@ eval(V, G1, N1, G2, N2, 0) :- connection(G1, N1, G2, N2),
 :- connection(_, _, G, I), not terminal(G, I, input).
 
 % There cannot be multiple connections to the same input pin
-G1 = G2 :- connection(G1, _, G, N), connection(G2, _, G, N).
+F1 = F2 :- connection(F1, _, G, N), connection(F2, _, G, N).
 I1 = I2 :- connection(G, I1, G, N), connection(G, I2, G, N).
 
 #include "connectives/atom.lp".
