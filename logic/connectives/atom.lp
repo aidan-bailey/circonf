@@ -17,4 +17,4 @@ eval(S, F1, N1, F2, N2, V) :- connection(F1, N1, F2, N2), connective_type(F2, de
 con(F1, F2) :- connection(F1, N1, F2, N2).
 coneval(S, F1, V) :- eval(S, F1, 1, F2, N2, V).
 spath(F1, F2) :- con(F1, F2).
-spath(F1, G3) :- con(F1, F2), con(F2, G3).
+spath(F1, F3) :- con(F1, F2), con(F2, F3).
