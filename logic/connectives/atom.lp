@@ -6,6 +6,8 @@ arity(atom, output, 10).
 
 eval(S, F1, N1, F2, N2, V) :- connection(F1, N1, F2, N2), connective_type(F1, atom), assign(S, F1, V), valuation(S).
 
+models(F) :- connective_type(F, atom), connective(F)
+
 % Destination
 
 type(destination).
