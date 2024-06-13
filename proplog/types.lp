@@ -119,6 +119,8 @@ entails(Kb, F2) :-
     knowledgeBase(Kb, _),
     #count{F1: knowledgeBase(Kb, F1), entails(F1, F2)} = N.
 
+:- knowledgeBase(Kb, _), formula(F, _), Kb = F.
+
 %%%%%%%%%%%%
 
 atom(a).
