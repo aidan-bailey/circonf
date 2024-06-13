@@ -81,7 +81,7 @@ clause(F, C) :- model(F, C, _).
 % SATISIFCATION %
 %%%%%%%%%%%%%%%%%
 
-clauses(F, N) :- #count{C: clause(F, C)} = N, formula(F, _).
+clauses(F, N) :- #count{C: clause(F, C)} = N, model(F, _, _).
 literals(F, C, N) :- clause(F, C), #count{L: model(F, C, L)} = N.
 
 % C2 is subsumed by C1
@@ -93,15 +93,14 @@ subsumes(F1, C1, F2, C2) :-
 
 % C2 is subsumed by all the clauses in F1
 subsumes(F1, F2, C2) :-
-    formula(F1, _),
     clause(F2, C2),
     clauses(F1, N),
     #count{C1: subsumes(F1, C1, F2, C2)} = N.
 
 % all the clauses in F2 are subsumed by all the clauses in F1
 subsumes(F1, F2) :-
-    formula(F1, _),
-    formula(F2, _),
+    model(F1, _, _),
+    model(F2, _, _),
     clauses(F2, N),
     #count{C2: subsumes(F1, F2, C2)} = N.
 
@@ -109,9 +108,9 @@ formulas(Kb, N) :-
     knowledgeBase(Kb, _),
     #count{F: knowledgeBase(Kb, F)} = N.
 
-entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1), F1 != F2.
+entails(F1, F2) :- model(F1, _, _), model(F2, _, _), contr(F1), F1 != F2.
 
-entails(F1, F2) :- formula(F1, _), formula(F2, _), subsumes(F1, F2), F1 != F2.
+entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F1, F2), F1 != F2.
 
 model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
 model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
@@ -123,10 +122,12 @@ model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 atom(a).
 atom(b).
 
-connective(notgate, notg).
-connection(a, notgate, 1).
+connective(andgate, andg).
+connection(a, andgate, 1).
+connection(b, andgate, 2).
 
-knowledgeBase(kb1, notgate).
+
+knowledgeBase(kb1, a).
 knowledgeBase(kb1, b).
 
 %#show model/3.
