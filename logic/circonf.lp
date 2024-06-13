@@ -1,33 +1,31 @@
 #include "prelude.lp".
-#include "gates/not.lp".
-#include "gates/and.lp".
-#include "gates/or.lp".
-#include "gates/xor.lp".
-#include "gates/twiddle.lp".
+#include "connectives/not.lp".
+#include "connectives/and.lp".
+#include "connectives/or.lp".
 #include "generate/assignments.lp".
 #include "semantics.lp".
 
-gate(x1).
-gate_type(x1, source).
+connective(x1).
+connective_type(x1, source).
 
-gate(x2).
-gate_type(x2, source).
+connective(x2).
+connective_type(x2, source).
 
-gate(1).
-gate_type(1, twiddle_g).
+connective(1).
+connective_type(1, and_g).
 
 connection(x1, 1, 1, 1).
 connection(x2, 1, 1, 2).
 connection(1, 1, y1, 1).
 
-gate(y1).
-gate_type(y1, destination).
+connective(y1).
+connective_type(y1, destination).
 
 %%%%%%%%%%%%
 % OPTIMISE %
 %%%%%%%%%%%%
 
-%#show gate_type/2.
+%#show connective_type/2.
 %#show val/3.
 %#show assign/3.
 
