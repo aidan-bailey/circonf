@@ -101,7 +101,7 @@ subsumes(F1, F2) :-
     clauses(F2, N),
     #count{C2: subsumes(F1, F2, C2)} = N.
 
-entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1).
+entails(F1, F2) :- formula(F1, _), formula(F2, _), contr(F1), F1 != F2.
 
 entails(F1, F2) :- subsumes(F1, F2), F1 != F2.
 
@@ -120,7 +120,11 @@ connection(b, andgate, 2).
 
 connective(contgate, andg).
 connection(a, contgate, 1).
-connection(b, contgate, 2).
+
+connective(contnot, notg).
+connection(a, contnot, 1).
+
+connection(contnot, contgate, 2).
 
 #show entails/2.
 %#show model/3.
