@@ -124,24 +124,3 @@ model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
 model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 
 :- knowledgeBase(Kb, _), formula(F, _), Kb = F.
-
-%%%%%%%%%%%%
-
-atom(a;b).
-
-connective(limplate, limpl).
-connection(a, limplate, 1).
-connection(b, limplate, 2).
-
-connective(lnotgate, lnotg).
-connection(a, lnotgate, 1).
-
-connective(lorate, lor).
-connection(lnotgate, lorate, 1).
-connection(b, lorate, 2).
-
-entails(lorate, limplate).
-
-%#show model/3.
-#show entails/2.
-%#show subsumes/3.

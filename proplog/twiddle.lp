@@ -8,3 +8,6 @@ model(F, 1, L) :- connective(F, limpl), connection(Fout, F, 1), model(Fout, C, -
 model(F, 1, -L) :- connective(F, limpl), connection(Fout, F, 1), model(Fout, C, L), not model(Fout, C, -L).
 
 model(F, C + 1, L) :- connective(F, limpl), connection(Fout, F, 2), model(Fout, C, L).
+
+antecedent(F, A) :- connective(F, twiddle), connection(A, F, 1).
+consequent(F, B) :- connective(F, twiddle), connection(B, F, 2).
