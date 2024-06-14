@@ -83,8 +83,6 @@ formulas(Kb, N) :-
     knowledgeBase(Kb, _),
     #count{F: knowledgeBase(Kb, F)} = N.
 
-%entails(F1, F2) :- model(F1, _, _), model(F2, _, _), contr(F1), F1 != F2.
-%entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F1, F2), F1 != F2.
 :- model(F1, _, _), model(F2, _, _), not subsumes(F1, F2), not contr(F1), entails(F1, F2).
 
 model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
