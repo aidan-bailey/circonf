@@ -100,13 +100,13 @@ subsumes(F1, C1, F2, C2) :-
     literals(F2, C2, N),
     #count{L: model(F2, C2, L), model(F1, C1, L)} = N.
 
-% C2 is subsumed by all the clauses in F1
+% C2 is subsumed by a clause in F1
 subsumes(F1, F2, C2) :-
     clause(F2, C2),
     clauses(F1, N),
-    #count{C1: subsumes(F1, C1, F2, C2)} = N.
+    #count{C1: subsumes(F1, C1, F2, C2)} > 0.
 
-% all the clauses in F2 are subsumed by all the clauses in F1
+% All the clauses in F2 are subsumed by a clause in C1
 subsumes(F1, F2) :-
     model(F1, _, _),
     model(F2, _, _),
@@ -117,7 +117,8 @@ formulas(Kb, N) :-
     knowledgeBase(Kb, _),
     #count{F: knowledgeBase(Kb, F)} = N.
 
-:- model(F1, _, _), model(F2, _, _), not subsumes(F1, F2), not contr(F1), entails(F1, F2).
+:- model(F1, _, _), model(F2, _, _), not subsumes(F2, F1), not contr(F1), entails(F1, F2).
+%entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F2, F1).
 
 model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
 model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
@@ -128,13 +129,19 @@ model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 
 atom(a;b).
 
-connective(andgate, andg).
+connective(implgate, implg).
+connection(a, implgate, 1).
+connection(b, implgate, 2).
 
-connection(a, andgate, 1).
-connection(b, andgate, 2).
+connective(notgate, notg).
+connection(a, notgate, 1).
 
-%atom(a).
-entails(andgate, a).
+connective(orgate, org).
+connection(notgate, orgate, 1).
+connection(b, orgate, 2).
 
+entails(orgate, implgate).
 
-#show.
+%#show model/3.
+#show entails/2.
+%#show subsumes/3.
