@@ -1,6 +1,7 @@
 #include "and.lp".
 #include "or.lp".
 #include "not.lp".
+#include "implies.lp".
 
 %%%%%%%%%%%
 % FORMULA %
@@ -125,14 +126,15 @@ model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 
 %%%%%%%%%%%%
 
-atom(a).
-atom(b).
+atom(a;b).
 
 connective(andgate, andg).
+
 connection(a, andgate, 1).
 connection(b, andgate, 2).
 
-knowledgeBase(kb1, a).
-knowledgeBase(kb1, b).
+%atom(a).
+entails(andgate, a).
+
 
 #show.
