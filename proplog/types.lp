@@ -1,5 +1,6 @@
-#include "and.lp"
-#include "or.lp"
+#include "and.lp".
+#include "or.lp".
+#include "not.lp".
 
 %%%%%%%%%%%
 % FORMULA %
@@ -7,8 +8,11 @@
 
 formula_type(atom; const; conn).
 
-% a named formula can only have one type
-T1 = T2 :- formula(N, T1), formula(N, T2).
+% a formula has to have a defined type
+:- formula(_, T), not formula_type(T).
+
+% a formula can only have one type
+:- formula(F, T1), formula(F, T2), T1 != T2.
 
 %%%%%%%%
 % ATOM %
@@ -26,7 +30,27 @@ const_type(verum; falsum).
 % CONNECTIVE %
 %%%%%%%%%%%%%%
 
+% a connective has to have a defined type
+:- connective(F, T), not connective_type(T).
+
+% a connective can only have one type
+:- connective(F, T1), connective(F, T2), T1 != T2.
+
+% a connective has to have an arity
 formula(F, conn) :- connective(F, T), connective_type(T).
+
+%%%%%%%%%
+% ARITY %
+%%%%%%%%%
+
+% each arity must have an associated connective type
+:- arity(T, _), not connective_type(T).
+
+% each connective type must have an associated arity
+:- connective_type(T), not arity(T, _).
+
+% a connective type can only have one arity
+:- arity(T, N1), arity(T, N2), N1 != N2.
 
 %%%%%%%%%%%%%
 % INPUTS %
@@ -38,6 +62,15 @@ input(F, 1..A) :- connective(F, T), arity(T, A).
 % CONNECTION %
 %%%%%%%%%%%%%%
 
+% formula cannot be connected to itself
+:- connection(Fout, Fin, _), Fout = Fin.
+
+% No cycles
+path(F1, F2) :- connection(F1, F2, _).
+path(F1, F3) :- path(F1, F2), path(F2, F3).
+:- path(F, F).
+
+% every formula has to have all its inputs connected
 :- formula(F, conn), input(F, I), not connection(_, F, I).
 
 %%%%%%%%%%
@@ -101,8 +134,5 @@ connection(b, andgate, 2).
 
 knowledgeBase(kb1, a).
 knowledgeBase(kb1, b).
-
-atom(c).
-entails(kb1, c).
 
 #show.
