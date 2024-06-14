@@ -10,7 +10,7 @@
 formula_type(atom; const; conn).
 
 % a formula has to have a defined type
-:- formula(_, T), lnot formula_type(T).
+:- formula(_, T), not formula_type(T).
 
 % a formula can only have one type
 :- formula(F, T1), formula(F, T2), T1 != T2.
@@ -32,7 +32,7 @@ const_type(verum; falsum).
 %%%%%%%%%%%%%%
 
 % a connective has to have a defined type
-:- connective(F, T), lnot connective_type(T).
+:- connective(F, T), not connective_type(T).
 
 % a connective can only have one type
 :- connective(F, T1), connective(F, T2), T1 != T2.
@@ -45,10 +45,10 @@ formula(F, conn) :- connective(F, T), connective_type(T).
 %%%%%%%%%
 
 % each arity must have an associated connective type
-:- arity(T, _), lnot connective_type(T).
+:- arity(T, _), not connective_type(T).
 
 % each connective type must have an associated arity
-:- connective_type(T), lnot arity(T, _).
+:- connective_type(T), not arity(T, _).
 
 % a connective type can only have one arity
 :- arity(T, N1), arity(T, N2), N1 != N2.
@@ -72,7 +72,7 @@ path(F1, F3) :- path(F1, F2), path(F2, F3).
 :- path(F, F).
 
 % every formula has to have all its inputs connected
-:- formula(F, conn), input(F, I), lnot connection(_, F, I).
+:- formula(F, conn), input(F, I), not connection(_, F, I).
 
 %%%%%%%%%%
 % MODELS %
@@ -117,11 +117,11 @@ formulas(Kb, N) :-
     knowledgeBase(Kb, _),
     #count{F: knowledgeBase(Kb, F)} = N.
 
-:- model(F1, _, _), model(F2, _, _), lnot subsumes(F2, F1), lnot contr(F1), entails(F1, F2).
+:- model(F1, _, _), model(F2, _, _), not subsumes(F2, F1), not contr(F1), entails(F1, F2).
 %entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F2, F1).
 
-model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), lnot model(F, N, -L).
-model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), lnot model(F, N, L).
+model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
+model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
 
 :- knowledgeBase(Kb, _), formula(F, _), Kb = F.
 
