@@ -1,6 +1,6 @@
 #include "and.lp".
 #include "or.lp".
-#include "lnot.lp".
+#include "not.lp".
 #include "implies.lp".
 
 %%%%%%%%%%%
