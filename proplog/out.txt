@@ -1,0 +1,20 @@
+clingo version 5.7.1
+Reading from proplog.lp
+Reading      : 0.023
+Preprocessing: 0.000
+Solving...
+----------------------------------------------------------------------------|
+ID:T       Vars           Constraints         State            Limits       |
+       #free/#fixed   #problem/#learnt  #conflicts/ratio #conflict/#learnt  |
+----------------------------------------------------------------------------|
+ 0:R|      0/0      |       0/0       |         0/0.000 |    2000/2000000   |
+ 0:E|      0/0      |       0/0       |         0/0.000 |    2000/2000000   |
+Answer: 1
+model(p,1,p) model(f,1,f) model(-f,1,-f) model(-p,1,-p) model(nf,1,-f) model(-nf,1,f) entails(f,-nf) entails(-f,nf) entails(nf,-f) entails(-nf,f)
+----------------------------------------------------------------------------|
+SATISFIABLE
+
+Models       : 1
+Calls        : 1
+Time         : 0.024s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+CPU Time     : 0.014s

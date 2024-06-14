@@ -117,10 +117,37 @@ formulas(Kb, N) :-
     knowledgeBase(Kb, _),
     #count{F: knowledgeBase(Kb, F)} = N.
 
-:- model(F1, _, _), model(F2, _, _), not subsumes(F2, F1), not contr(F1), entails(F1, F2).
-%entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F2, F1).
+model(-F, 1, L) :- model(F, C, -L), not model(F, C, L).
+model(-F, 1, -L) :- model(F, C, L), not model(F, C, -L).
+
+%:- model(F1, _, _), model(F2, _, _), not subsumes(F2, F1), not contr(F1), entails(F1, F2).
+entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F2, F1), F1 != F2.
+entails(F1, F2) :- model(F1, _, _), model(F2, _, _), contr(F1), F1 != F2.
 
 model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, N, L), not model(F, N, -L).
 model(Kb, 1, -L) :- knowledgeBase(Kb, F), model(F, N, -L), not model(F, N, L).
+
+%kbFormulaClauses(Kb, N) :- #count{C} = N.
+
+model(Kb, 1, L) :- knowledgeBase(Kb, F), model(F, 1, L).
+
+% Ew
+
+%{ordering(Kb, F, I): I = 1..N} = 1 :- formulas(Kb, N), knowledgeBase(Kb, F).
+%:- ordering(Kb, F1, I), ordering(Kb, F2, I), F1 != F2.
+
+%clauseUp(Kb, 0, 1) :- knowledgeBase(Kb, _).
+%clauseUp(Kb, I, Nf) :- ordering(Kb, F, I), clauseUp(Kb, I - 1, Ni), clauses(F, N), Nf = Ni * N.
+%clauses(Kb, N) :- formulas(Kb, I), clauseUp(Kb, I, N).
+%clause(Kb, 1..N) :- clauses(Kb, N), knowledgeBase(Kb, _).
+
+%{join(Kb, C1, F, C2): knowledgeBase(Kb, F), clause(F, C2)} :- C1 = 1..N, clauses(Kb, N).
+%:- join(Kb, C1, F, C2), join(Kb, C1, F, C3), C2 != C3.
+
+%model(Kb, C, L) :- connective(F, land), connection(Fin, F, 1), model(Fin, C, L).
+%model(Kb, C, L) :- connective(F, land),
+%                  connection(Fin1, F, 1), clause(Fin1, C),
+%                  connection(Fin2, F, 2), model(Fin2, _, L).
+
 
 :- knowledgeBase(Kb, _), formula(F, _), Kb = F.
