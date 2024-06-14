@@ -1,3 +1,6 @@
+#include "and.lp"
+#include "or.lp"
+
 %%%%%%%%%%%
 % FORMULA %
 %%%%%%%%%%%
@@ -23,17 +26,6 @@ const_type(verum; falsum).
 % CONNECTIVE %
 %%%%%%%%%%%%%%
 
-io(out).
-
-connective_type(org).
-arity(org, 2).
-
-connective_type(andg).
-arity(andg, 2).
-
-connective_type(notg).
-arity(notg, 1).
-
 formula(F, conn) :- connective(F, T), connective_type(T).
 
 %%%%%%%%%%%%%
@@ -52,26 +44,9 @@ input(F, 1..A) :- connective(F, T), arity(T, A).
 % MODELS %
 %%%%%%%%%%
 
-%models(F, 1) :- formula(F, atom).
-
 models(F, Num) :- formula(F, _), #max{N: model(F, N, _)} = Num.
 
-%:- model(F, _, _), not formula(F, _).
-
-%model(F, 1, verum) :- constant(F, verum).
-
-%model(F, 1, falsum) :- constant(F, falsum).
-
 model(F, 1, L) :- formula(F, atom), L = F.
-
-model(F, 1, L) :- connective(F, org), connection(Fout, F, 1), model(Fout, C, L).
-model(F, 2, L) :- connective(F, org), connection(Fout, F, 2), model(Fout, C, L).
-
-model(F, 1, L) :- connective(F, andg), connection(Fout, F, 1), model(Fout, C, L).
-model(F, 1, L) :- connective(F, andg), connection(Fout, F, 2), model(Fout, C, L).
-
-model(F, 1, L) :- connective(F, notg), connection(Fout, F, 1), model(Fout, C, -L), not model(Fout, C, L).
-model(F, 1, -L) :- connective(F, notg), connection(Fout, F, 1), model(Fout, C, L), not model(Fout, C, -L).
 
 contr(F) :- model(F, C, L), model(F, C, -L).
 
