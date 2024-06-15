@@ -81,7 +81,6 @@ path(F1, F3) :- path(F1, F2), path(F2, F3).
 models(F, Num) :- formula(F, _), #max{N: model(F, N, _)} = Num.
 
 model(F, 1, L) :- formula(F, atom), L = F.
-
 contr(F) :- model(F, C, L), model(F, C, -L).
 
 clause(F, C) :- model(F, C, _).
