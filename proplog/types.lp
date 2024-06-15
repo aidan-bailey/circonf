@@ -113,10 +113,6 @@ subsumes(F1, F2) :-
     clauses(F2, N),
     #count{C2: subsumes(F1, F2, C2)} = N.
 
-formulas(Kb, N) :-
-    knowledgeBase(Kb, _),
-    #count{F: knowledgeBase(Kb, F)} = N.
-
 %:- model(F1, _, _), model(F2, _, _), not subsumes(F2, F1), not contr(F1), entails(F1, F2).
 entails(F1, F2) :- model(F1, _, _), model(F2, _, _), subsumes(F2, F1), F1 != F2.
 entails(F1, F2) :- model(F1, _, _), model(F2, _, _), contr(F1), F1 != F2.

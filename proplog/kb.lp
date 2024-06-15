@@ -13,3 +13,7 @@ clause(Kb, 1..N) :- clauses(Kb, N).
 model(Kb, C, L) :- join(Kb, C, F, C2), model(F, C2, L).
 
 :- knowledgeBase(Kb, _), formula(F, _), Kb = F.
+
+formulas(Kb, N) :-
+    knowledgeBase(Kb, _),
+    #count{F: knowledgeBase(Kb, F)} = N.
