@@ -53,13 +53,19 @@ started(segment(edge(A, B), C1, C2)) :- segment(edge(A, B), C1, C2), place(C1, A
 
 :- segment(E, C1, C2), not continued(segment(E, C1, C2)), not started(segment(E, C1, C2)), not ended(segment(E, C1, C2)).
 
+
+
 %%%%%%%%%%%%
 % OPTIMISE %
 %%%%%%%%%%%%
 
-segments(N) :- #count{E, C1, C2: segment(E, C1, C2)} = N.
+segments(N, edge(A, B)) :- #count{C1, C2: segment(edge(A, B), C1, C2)} = N, edge(A, B).
 
-#minimize{N: segments(N)}.
+netSegments(N) :- #count{C1, C2: segment(edge(A, B), C1, C2)} = N.
+
+:- segments(N, E), N < 1.
+
+#minimize{N: netSegments(N)}.
 
 %#show segments/1.
 
@@ -67,4 +73,6 @@ node(a;b;c;d).
 
 edge(a,b).
 edge(a,c).
-edge(a,d).
+
+#show segments/2.
+#show netSegments/1.
