@@ -36,8 +36,8 @@ def main():
     boundryHeight = 5
 
     ctx = Context(5, 5, ["a", "b", "c", "d"], [("a", "b")])
-    ctl = clingo.Control()
-    with open("/Users/aidanbailey/Source/School/graphconf/graphp/graphp.lp", "r") as f:
+    ctl = clingo.Control(arguments=["--parallel-mode=", "7"])#, "--time-limit=", "30"])
+    with open("/Users/aidanbailey/Source/School/graphconf/graphconf.lp", "r") as f:
         code = f.read()
     ctl.add("base", [], code)
 
@@ -49,7 +49,7 @@ def main():
         segments = []
         symbols = model.symbols(atoms=True)
         for symbol in symbols:
-            if symbol.name == "place":
+            if symbol.name == "node":
                 (c, n) = symbol.arguments
                 (x, y) = c.arguments
                 nodepositions[n.name] = (x.number - 1, y.number - 1)
@@ -59,8 +59,9 @@ def main():
            # elif symbol.name == "wireend":
            #     (x1, y1, x2, y2, v1, v2) = symbol.arguments
            #     segments.append((x1.number - 1, y1.number - 1, x2.number - 1, y2.number - 1, v1, v2))
-            elif symbol.name == "segment":
-                (e, c1, c2) = symbol.arguments
+            elif symbol.name in ["wirestart", "wireend", "segment"]:
+
+                (c1, c2, e) = symbol.arguments
                 (v1, v2) = e.arguments
                 (x1, y1) = c1.arguments
                 (x2, y2) = c2.arguments
@@ -74,6 +75,7 @@ def main():
         labels = {
 
         }
+        edge_labels = {}
 
         for node, (x, y) in nodepositions.items():
             G.add_node(node)
@@ -86,13 +88,21 @@ def main():
             labels[f"{v1}{v2},{x1},{y1},{x2},{y2},start"] = ""
             pos[f"{v1}{v2},{x1},{y1},{x2},{y2},end"] = (x2, y2)
             labels[f"{v1}{v2},{x1},{y1},{x2},{y2},end"] = ""
+            #color.append((0, 0, 0, 0.2))
+            #color.append((0, 0, 0, 0.2))
             color.append((0, 0, 0, 0))
             color.append((0, 0, 0, 0))
-            G.add_edge(f"{v1}{v2},{x1},{y1},{x2},{y2},start", f"{v1}{v2},{x1},{y1},{x2},{y2},end")
+            edge = (f"{v1}{v2},{x1},{y1},{x2},{y2},start", f"{v1}{v2},{x1},{y1},{x2},{y2},end")
+            G.add_edge(edge[0], edge[1])
+            edge_labels[edge] = f"{v1}{v2}"
 
         G.add_edges_from(edges)
 
-        graphs.append(lambda : nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15))
+        def draw_graph():
+            nx.draw(G, pos=pos, node_color = color, labels=labels, with_labels=True, node_size=300, font_size=15)
+            nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels)
+
+        graphs.append(lambda : draw_graph())
 
     def on_finish(sol):
         graphs[-1]()
