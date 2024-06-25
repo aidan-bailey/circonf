@@ -2,9 +2,9 @@
 % INPUT %
 %%%%%%%%%
 
-#const nBoundryWidth = 5.
-#const nBoundryHeight = 5.
-#const nMinVertexDistance = 3.
+#const nBoundryWidth = 6.
+#const nBoundryHeight = 6.
+#const nMinVertexDistance = 2.
 #const nMaxVertexDistance = 10.
 
 %%%%%%%%%%
@@ -41,6 +41,9 @@ E1 = E2 :- wirestart(X, Y, X2, Y2, E1), wirestart(X, Y, X2, Y2, E2).
 E1 = E2 :- wireend(X, Y, X2, Y2, E1), wireend(X, Y, X2, Y2, E2).
 
 touching(edge(V1, V2)) :- wirestart(_, _, X2, Y2, edge(V1, V2)), wireend(X2, Y2, _, _, edge(V1, V2)).
+touching(edge(V1, V2)) :- wirestart(_, _, X2, Y2, edge(V1, V2)), wireend(X2, Y2, _, _, edge(V1, V2)).
+
+:- segment(_, _, X, Y, _), node(X, Y, _).
 
 % a segment is an inner part of a wire
 %{segment(X, Y, X + (1; -1), Y, edge(V1, V2)): square(X, Y)} :- edge(V1, V2), not touching(edge(V1, V2)).
@@ -49,6 +52,9 @@ touching(edge(V1, V2)) :- wirestart(_, _, X2, Y2, edge(V1, V2)), wireend(X2, Y2,
 :- segment(X1, Y1, X2, Y2, edge(V1, V2)), not square(X2, Y2).
 :- segment(X, Y, X, Y, _).
 E1 = E2 :- segment(X, Y, X2, Y2, E1), segment(X, Y, X2, Y2, E2).
+:- segment(X2, Y2, X, Y, _), segment(X, Y, X2, Y2, _).
+:- segment(_, _, X, Y, _), node(X, Y, _).
+:- segment(X, Y, _, _, _), node(X, Y, _).
 
 % segment is not contected to
 -started(X1, Y1, X2, Y2, edge(V1, V2)) :- segment(X1, Y1, X2, Y2, edge(V1, V2)), not wirestart(_, _, X1, Y1, edge(V1, V2)), not segment(_, _, X1, Y1, edge(V1, V2)).
@@ -60,7 +66,7 @@ E1 = E2 :- segment(X, Y, X2, Y2, E1), segment(X, Y, X2, Y2, E2).
 % AGGERGATION %
 %%%%%%%%%%%%%%%
 
-wireLength(edge(V1, V2), L + 2) :- edge(V1, V2), #count{X, Y: segment(X, Y, _, _, edge(V1, V2))} = L.
+wireLength(edge(V1, V2), L) :- edge(V1, V2), #count{X, Y: segment(X, Y, _, _, edge(V1, V2))} = L.
 wireCount(N) :- #count{V1, V2: edge(V1, V2)} = N.
 netWireLength(N) :- #sum{L, edge(V1, V2): wireLength(edge(V1, V2), L)} = N.
 meanWireLength(M) :- netWireLength(N), wireCount(C),  M = N / C.
@@ -69,8 +75,8 @@ meanWireLength(M) :- netWireLength(N), wireCount(C),  M = N / C.
 % CONSTRAINTS %
 %%%%%%%%%%%%%%%
 
-:- vertex(V1), vertex(V2), vertexDistance(V1, V2, N), N < nMinVertexDistance.
-:- vertex(V1), vertex(V2), vertexDistance(V1, V2, N), N > nMaxVertexDistance.
+%:- vertex(V1), vertex(V2), vertexDistance(V1, V2, N), N < nMinVertexDistance.
+%:- vertex(V1), vertex(V2), vertexDistance(V1, V2, N), N > nMaxVertexDistance.
 
 % a segment cannot be left unfinished
 :- segment(X1, Y1, X2, Y2, edge(V1, V2)),
@@ -102,17 +108,42 @@ meanWireLength(M) :- netWireLength(N), wireCount(C),  M = N / C.
 %E1 = E2 :- segment(X1, Y1, X2, Y2, E1), segment(X1, Y1, X2, Y2, E2).
 E1 = E2 :- segment(_, _, X, Y, E1), segment(_, _, X, Y, E2).
 
-:- segment(X, Y, _, _, _), segment(_, _, X, Y, _).
+%:- segment(X, Y, X, Y, E1), segment(_, _, X, Y, E2), E1 != E2.
+%:- segment(X, Y, _,)
 
 E1 = E2 :- segment(X, Y, _, _, E1), segment(X, Y, _, _, E2).
 
+:- segment(X, Y, X2, Y2, E), segment(X2, Y2, X3, Y3, E), wirestart(_, _, X2, Y2, _).
+:- segment(X, Y, X2, Y2, E), segment(X2, Y2, X3, Y3, E), wireend(X2, Y2, _, _, _).
+
+wingding(X, Y, X2, Y2, E) :- segment(X, Y, X2, Y2, E).
+wingding(X, Y, X2, Y2, E) :- wirestart(X, Y, X2, Y2, E).
+wingding(X, Y, X2, Y2, E) :- wireend(X, Y, X2, Y2, E).
+
+crossing(E1, E2) :- wingding(X, Y, X + 1, Y + 1, E1), wingding(X, Y + 1, X + 1, Y, E2).
+crossing(E1, E2) :- wingding(X, Y, X + 1, Y + 1, E1), wingding(X + 1, Y, X, Y + 1, E2).
+crossing(E1, E2) :- wingding(X, Y, X - 1, Y - 1, E1), wingding(X - 1, Y, X, Y - 1, E2).
+crossing(E1, E2) :- wingding(X, Y, X - 1, Y - 1, E1), wingding(X, Y - 1, X - 1, Y, E2).
+
+:- nCrossingEdges(N), N > (Ne * Ne), nEdges(Ne).
+nCrossingEdges(N) :- #count{W1, W2: crossing(W1, W2)} = N.
+:- nCrossingEdges(N1), nCrossingEdges(N2), N1 != N2.
 
 %%%%%%%%%%%%
 % OPTIMISE %
 %%%%%%%%%%%%
 
-%#minimize{N: netWireLength(N)}.
+nEdges(N) :- #count{V1, V2: edge(V1, V2)} = N.
 
-vertex(a;b;c;d;e).
-edge(a, b; b, c; c, d).
-edge(a, e; b, e; c, e; d, e).
+%#maximize{N: nCrossingEdges(N)}.
+%#maximize{N: netWireLength(N)}.
+%#minimize{N: nCrossingEdges(N)}.
+
+nCrossingEdges(0).
+
+vertex(a;b;c;d).
+edge(a, b; b, c).
+edge(a, d; b, d; c, d).
+
+#show nCrossingEdges/1.
+#show netWireLength/1.
