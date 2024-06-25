@@ -38,14 +38,10 @@ E1 = E2 :- wirestart(S1, S2, E1), wirestart(S1, S2, E2).
 :- wireend(square(X, Y), square(X, Y), _).
 E1 = E2 :- wireend(square(X, Y), square(X2, Y2), E1), wireend(square(X, Y), square(X2, Y2), E2).
 
-touching(E) :- wirestart(_, S, E), wireend(S, _, E).
-touching(E) :- wirestart(_, S, E), wireend(S, _, E).
--touching(edge(E1, E2)) :- not touching(edge(E1, E2)), edge(E1, E2).
-
 :- segment(_, S, _), node(S, _).
 
 % a segment is an inner part of a wire
-{segment(square(X, Y), square(X + (1; -1; 0), Y + (1; -1; 0)), edge(E1, E2)): square(X, Y)} :- edge(E1, E2), -touching(edge(E1, E2)).
+{segment(square(X, Y), square(X + (1; -1; 0), Y + (1; -1; 0)), edge(E1, E2)): square(X, Y)} :- edge(E1, E2).
 :- segment(square(X1, Y1), square(X2, Y2), edge(V1, V2)), not square(X2, Y2).
 :- segment(S, S, _).
 E1 = E2 :- segment(S1, S2, E1), segment(S1, S2, E2).
